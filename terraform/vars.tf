@@ -13,9 +13,6 @@ variable "esxi_password" {
 variable "datastore" {
    default = "alldisks" 
 }
-variable "vlan_id" {
-    default = "20"
-}
 
 variable "vswitch" {
     default = "vSwitch0"
