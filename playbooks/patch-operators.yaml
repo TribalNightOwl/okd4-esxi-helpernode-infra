@@ -1,0 +1,18 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+
+  - name: patch managementState to Managed
+    shell: |
+      export KUBECONFIG=~/ocp4/auth/kubeconfig
+      oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+
+  - name: patch storage to emptyDir
+    shell: |
+      export KUBECONFIG=~/ocp4/auth/kubeconfig
+      oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'
+
+  - name: patch opening image registry route
+    shell: |
+      export KUBECONFIG=~/ocp4/auth/kubeconfig
+      oc patch configs.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"defaultRoute":true}}'

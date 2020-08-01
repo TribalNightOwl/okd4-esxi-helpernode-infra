@@ -1,0 +1,34 @@
+---
+- name: install epel-release
+  dnf:
+    name: epel-release
+    state: latest
+    update_cache: yes
+
+- name: update all
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: restart systemctl
+  systemd:
+    daemon_reexec: yes
+
+- name: install ansible
+  dnf:
+    name: ansible
+    state: latest
+    update_cache: yes
+
+- name: install git
+  dnf:
+    name: git
+    state: latest
+    update_cache: yes
+
+- name: install tmux
+  dnf:
+    name: tmux
+    state: latest
+    update_cache: yes

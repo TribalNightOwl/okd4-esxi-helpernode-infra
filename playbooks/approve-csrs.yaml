@@ -1,0 +1,25 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+
+  - name: install jq
+    dnf:
+      name: jq
+      state: latest
+      update_cache: yes
+
+  - name: approve CSRs
+    shell: |
+      export KUBECONFIG=~/ocp4/auth/kubeconfig
+      CSR=some
+      while true; do 
+        if [[ "No resources found" =~ "$CSR" ]] ; then
+          echo $CSR
+          exit 0
+        fi
+        CSR="$(oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve)"
+        echo $CSR
+        sleep 30
+      done
+    args:
+      executable: /bin/bash

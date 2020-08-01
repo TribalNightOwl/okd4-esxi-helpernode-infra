@@ -1,0 +1,6 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+
+  - import_tasks: init.yaml
+  - import_tasks: clone-repo.yaml

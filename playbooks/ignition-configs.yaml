@@ -1,0 +1,80 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+
+  - name: Create a install directory
+    file:
+      path: ~/ocp4
+      state: directory
+      mode: '0755'
+
+  - name: Create a pull-secret directory
+    file:
+      path: ~/.openshift
+      state: directory
+      mode: '0755'
+
+  - name: Copy pull-secret
+    copy:
+      src: ../files/pull-secret.json
+      dest: ~/.openshift/pull-secret
+      mode: '0644'
+
+  - name: Create install-config.yaml
+    shell: |
+      cat <<EOF > ~/ocp4/install-config.yaml
+      apiVersion: v1
+      baseDomain: example.com
+      compute:
+      - hyperthreading: Enabled
+        name: worker
+        replicas: 0
+      controlPlane:
+        hyperthreading: Enabled
+        name: master
+        replicas: 3
+      metadata:
+        name: ocp4
+      networking:
+        clusterNetworks:
+        - cidr: 10.254.0.0/16
+          hostPrefix: 24
+        networkType: OpenShiftSDN
+        serviceNetwork:
+        - 172.30.0.0/16
+      platform:
+        none: {}
+      pullSecret: '$(< ~/.openshift/pull-secret)'
+      sshKey: '$(< ~/.ssh/helper_rsa.pub)'
+      EOF
+
+
+  - name: Create manifests
+    shell: |
+      cd ~/ocp4
+      openshift-install create manifests
+
+  - name: Prevent pods scheduled on control plane
+    lineinfile:
+      path: ~/ocp4/manifests/cluster-scheduler-02-config.yml
+      regexp: 'mastersSchedulable: true'
+      insertafter: '^spec:'
+      line: '  mastersSchedulable: false'
+
+  - name: Create ignition configs
+    shell: |
+      cd ~/ocp4
+      openshift-install create ignition-configs
+
+  # host ignition files
+  - name: Create ignition directory
+    file:
+      path: /var/www/html/ignition
+      state: directory
+      mode: '0755'
+
+  - name: Copy ignition files
+    shell: |
+      cp -R ~/ocp4/* /var/www/html/ignition/
+      restorecon -vR /var/www/html/
+      chmod o+r /var/www/html/ignition/*.ign
