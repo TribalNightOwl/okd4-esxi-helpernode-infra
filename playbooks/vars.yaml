@@ -1,0 +1,18 @@
+installdir: ~/ocp4
+vmxfile: /vmfs/volumes/alldisks/ocp4-helpernode/ocp4-helpernode.vmx
+isofile: /vmfs/volumes/alldisks/iso/CentOS-8.2.2004-x86_64-minimal.iso
+vm:
+  helpernode:
+    name: ocp4-helpernode
+  bootstrap:
+    name: ocp4-bootstrap
+  controlplane1:
+    name: ocp4-control-plane-1
+  controlplane2:
+    name: ocp4-control-plane-2
+  controlplane3:
+    name: ocp4-control-plane-3
+  compute1:
+    name: ocp4-compute-1
+  compute2:
+    name: ocp4-compute-2

@@ -1,6 +1,9 @@
 ---
 - hosts: ocp4-helpernode
   tasks:
-
+  - include_vars:
+      file: vars.yaml
+  - include_vars:
+      file: ../files/vars.yaml
   - import_tasks: init.yaml
   - import_tasks: clone-repo.yaml
