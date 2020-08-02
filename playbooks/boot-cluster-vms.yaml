@@ -1,0 +1,27 @@
+---
+- hosts: esxi
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: boot the bootstrap VM
+    shell: |
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.bootstrap.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
+      sleep 120
+
+  - name: boot the control plane VMs
+    shell: |
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.controlplane1.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.controlplane2.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.controlplane3.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
+
+  - name: boot the worker VMs
+    shell: |
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.compute1.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.compute2.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.on $VMID
