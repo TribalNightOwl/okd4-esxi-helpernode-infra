@@ -8,7 +8,6 @@
     shell: |
       VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.bootstrap.name }} | cut -f1 -d ' ')
       vim-cmd vmsvc/power.on $VMID
-      sleep 120
 
   - name: boot the control plane VMs
     shell: |

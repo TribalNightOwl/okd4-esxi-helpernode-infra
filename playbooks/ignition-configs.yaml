@@ -1,10 +1,12 @@
 ---
 - hosts: ocp4-helpernode
   tasks:
+  - include_vars:
+      file: vars.yaml
 
   - name: Create a install directory
     file:
-      path: ~/ocp4
+      path: "{{ installdir }}"
       state: directory
       mode: '0755'
 
@@ -22,7 +24,7 @@
 
   - name: Create install-config.yaml
     shell: |
-      cat <<EOF > ~/ocp4/install-config.yaml
+      cat <<EOF > {{ installdir }}/install-config.yaml
       apiVersion: v1
       baseDomain: example.com
       compute:
@@ -51,19 +53,19 @@
 
   - name: Create manifests
     shell: |
-      cd ~/ocp4
+      cd {{ installdir }}
       openshift-install create manifests
 
   - name: Prevent pods scheduled on control plane
     lineinfile:
-      path: ~/ocp4/manifests/cluster-scheduler-02-config.yml
+      path: "{{ installdir }}/manifests/cluster-scheduler-02-config.yml"
       regexp: 'mastersSchedulable: true'
       insertafter: '^spec:'
       line: '  mastersSchedulable: false'
 
   - name: Create ignition configs
     shell: |
-      cd ~/ocp4
+      cd {{ installdir }}
       openshift-install create ignition-configs
 
   # host ignition files
@@ -75,6 +77,6 @@
 
   - name: Copy ignition files
     shell: |
-      cp -R ~/ocp4/* /var/www/html/ignition/
+      cp -R {{ installdir }}/* /var/www/html/ignition/
       restorecon -vR /var/www/html/
       chmod o+r /var/www/html/ignition/*.ign
