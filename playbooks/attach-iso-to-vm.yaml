@@ -1,0 +1,41 @@
+---
+- hosts: esxi
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: Ensure ide1 present
+    lineinfile:
+      path: "{{ vmxfile }}"
+      regexp: '^ide1:0.present'
+      line: ide1:0.present = "TRUE"
+
+  - name: Ensure clientDevice false
+    lineinfile:
+      path: "{{ vmxfile }}"
+      regexp: '^ide1:0.clientDevice'
+      line: ide1:0.clientDevice = "FALSE"
+
+  - name: Ensure pointing to iso file
+    lineinfile:
+      path: "{{ vmxfile }}"
+      regexp: '^ide1:0.fileName'
+      line: ide1:0.fileName = "{{ isofile }}"
+
+  - name: Ensure deviceType is cdrom-image
+    lineinfile:
+      path: "{{ vmxfile }}"
+      regexp: '^ide1:0.deviceType'
+      line: ide1:0.deviceType = "cdrom-image"
+
+  - name: Ensure ide1 is connected at start time
+    lineinfile:
+      path: "{{ vmxfile }}"
+      regexp: '^ide1:0.startConnected'
+      line: ide1:0.startConnected = "TRUE"
+
+  - name: reload VMX file and boot the helpernode
+    shell: |
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.helpernode.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/reload $VMID
+      vim-cmd vmsvc/power.on $VMID
