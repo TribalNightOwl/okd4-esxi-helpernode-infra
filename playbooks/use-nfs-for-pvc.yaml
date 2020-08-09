@@ -1,0 +1,10 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: patch storage to use NFS
+    shell: |
+      export KUBECONFIG={{ installdir }}/auth/kubeconfig
+      oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"pvc":{ "claim": "registry-pvc"}}}}'
