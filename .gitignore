@@ -2,3 +2,4 @@ files/pull-secret.json
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terraform/.terraform
+.env
