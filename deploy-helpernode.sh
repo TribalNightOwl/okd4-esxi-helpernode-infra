@@ -107,6 +107,7 @@ export KUBECONFIG=${INSTALL_DIR}/auth/kubeconfig
 openshift-install wait-for install-complete
 cat ${INSTALL_DIR}/auth/kubeadmin-password
 helpernodecheck nfs-setup
+oc create -f /usr/local/src/registry-pvc.yaml -n openshift-image-registry
 EOT
 read -p "Press ENTER to continue" CONTINUE
 
