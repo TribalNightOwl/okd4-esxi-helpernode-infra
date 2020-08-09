@@ -13,12 +13,8 @@
   - name: approve CSRs
     shell: |
       export KUBECONFIG={{ installdir }}/auth/kubeconfig
-      CSR=some
-      while true; do 
-        if [[ $CSR =~ .*error.* ]] ; then
-          echo $CSR
-          exit 0
-        fi
+      CSR=csr-something
+      while [[ $CSR =~ csr-.* ]] ; do e
         CSR="$(oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve 2>&1)"
         echo $CSR
         sleep 60
