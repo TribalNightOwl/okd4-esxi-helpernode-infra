@@ -1,0 +1,10 @@
+---
+- hosts: esxi
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: Shutdown the bootstrap VM
+    shell: |
+      VMID=$(vim-cmd vmsvc/getallvms|grep {{ vm.bootstrap.name }} | cut -f1 -d ' ')
+      vim-cmd vmsvc/power.off $VMID
