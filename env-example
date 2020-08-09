@@ -1,0 +1,6 @@
+ESXI_SERVER=192.168.1.200
+HELPERNODE=192.168.1.203
+INSTALL_DIR=/root/ocp4
+LOCAL_IP=IP_of_the_machine_where_the_deployment_is_executed
+
+TF_VAR_esxi_password=YOUR_PASSWORD_TO_ESXI_SERVER
