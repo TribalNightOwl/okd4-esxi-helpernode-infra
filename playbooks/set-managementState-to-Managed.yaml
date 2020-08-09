@@ -1,0 +1,10 @@
+---
+- hosts: ocp4-helpernode
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: patch managementState to Managed
+    shell: |
+      export KUBECONFIG={{ installdir }}/auth/kubeconfig
+      oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
