@@ -3,6 +3,12 @@
   tasks:
   - include_vars:
       file: vars.yaml
+
+  - name: Create a terraform directory
+    file:
+      path: ../terraform
+      state: directory
+      mode: '0755'
   
   - name: Create terraform main.tf file
     template:
