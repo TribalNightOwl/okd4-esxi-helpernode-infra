@@ -1,5 +1,5 @@
 variable "esxi_host" {
-    default = "192.168.1.200"
+    default = "{{ esxi.ipaddr }}"
 }
 
 variable "esxi_username" {
@@ -11,7 +11,7 @@ variable "esxi_password" {
 }
 
 variable "datastore" {
-   default = "alldisks" 
+   default = "{{ esxi.datastore }}" 
 }
 
 variable "vswitch" {

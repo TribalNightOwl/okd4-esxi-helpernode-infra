@@ -15,8 +15,8 @@ provider "esxi" {
   esxi_password      = var.esxi_password
 }
 
-resource "esxi_guest" "ocp4-helpernode" {
-  guest_name     = "ocp4-helpernode"
+resource "esxi_guest" "{{ vm.helpernode.name }}" {
+  guest_name     = "{{ vm.helpernode.name }}"
   numvcpus       = "4"
   memsize        = "8192"  # in Mb
   boot_disk_size = "200" # in Gb
@@ -27,19 +27,19 @@ resource "esxi_guest" "ocp4-helpernode" {
   virthwver      = "13"
 
   network_interfaces {
-    mac_address     = "00:50:56:01:01:0B"
+    mac_address     = "{{ vm.helpernode.macaddr }}"
     virtual_network = var.home_network
   }
 }
 
-resource "esxi_guest" "ocp4-machines" {
+resource "esxi_guest" "cluster-machines" {
   for_each = {
-    ocp4-bootstrap = "00:50:56:01:01:0C"
-    ocp4-control-plane-1 = "00:50:56:01:01:0D"
-    ocp4-control-plane-2 = "00:50:56:01:01:0E"
-    ocp4-control-plane-3 = "00:50:56:01:01:0F"
-    ocp4-compute-1 = "00:50:56:01:01:10"
-    ocp4-compute-2 = "00:50:56:01:01:11"
+    {{ vm.bootstrap.name }} = "{{ vm.bootstrap.macaddr }}"
+    {{ vm.controlplane1.name }} = "{{ vm.controlplane1.macaddr }}"
+    {{ vm.controlplane2.name }} = "{{ vm.controlplane2.macaddr }}"
+    {{ vm.controlplane3.name }} = "{{ vm.controlplane3.macaddr }}"
+    {{ vm.compute1.name }} = "{{ vm.compute1.macaddr }}"
+    {{ vm.compute2.name }} = "{{ vm.compute2.macaddr }}"
   }
   guest_name     = each.key
   numvcpus       = "4"

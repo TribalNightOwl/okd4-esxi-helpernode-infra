@@ -1,5 +1,5 @@
 #version=RHEL8
-ignoredisk --only-use=sda
+ignoredisk --only-use={{ vm.helpernode.disk }}
 # Partition clearing information
 clearpart --none --initlabel
 # Use graphical install
@@ -12,7 +12,7 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
-network  --bootproto=static --device=ens32 --gateway=192.168.1.1 --ip=192.168.1.203 --nameserver=127.0.0.1,192.168.1.1 --netmask=255.255.255.0 --ipv6=auto --activate
+network  --bootproto=static --device=ens32 --gateway={{ dhcp.router }} --ip={{ vm.helpernode.ipaddr}}  --nameserver=127.0.0.1,{{ dhcp.router }} --netmask=255.255.255.0 --ipv6=auto --activate
 network  --hostname=helper
 repo --name="Minimal" --baseurl=file:///run/install/repo/Minimal
 # Root password

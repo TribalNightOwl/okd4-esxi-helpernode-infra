@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  tasks:
+  - include_vars:
+      file: vars.yaml
+  
+  - name: Create terraform main.tf file
+    template:
+      src: ../templates/main.tf.j2
+      dest: ../terraform/main.tf
+
+  - name: Create terraform vars.tf file
+    template:
+      src: ../templates/vars.tf.j2
+      dest: ../terraform/vars.tf
+
+  - name: Create ocp4-helpernode vars.yaml file
+    template:
+      src: ../templates/ocp4-helpernode-vars.yaml.j2
+      dest: ../files/vars.yaml
+
+  - name: Create kickstart file
+    template:
+      src: ../templates/ks.cfg.j2
+      dest: ../files/ks.cfg
+
+  - name: Add ssh key to kickstart file
+    lineinfile:
+      path: ../files/ks.cfg
+      line: "sshkey --username=root \"{{ ansible_env.PUBSSHKEY }}\""
+      insertafter: '^rootpw'
+      create: yes
+
+  - name: Create config script
+    template:
+      src: ../templates/config.sh.j2
+      dest: ../config.sh
+
+  - name: Create deployment script
+    template:
+      src: ../templates/deploy-helpernode.sh.j2
+      dest: ../deploy-helpernode.sh
+      mode: 0755

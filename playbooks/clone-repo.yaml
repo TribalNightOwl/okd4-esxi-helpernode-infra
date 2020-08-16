@@ -1,11 +1,13 @@
 ---
-- name: Clone ocp4-helpernode repo
-  shell: |
-    git clone https://github.com/TribalNightOwl/ocp4-helpernode
-    cd ocp4-helpernode
+- hosts: ocp4-helpernode
+  tasks:
+  - name: Clone ocp4-helpernode repo
+    shell: |
+      git clone --depth 1 --branch ocp-4.5.2-tno1 https://github.com/TribalNightOwl/ocp4-helpernode
+      cd ocp4-helpernode
 
-- name: Copy vars.yaml
-  copy:
-    src: ../files/vars.yaml
-    dest: ocp4-helpernode/vars.yaml
-    mode: '0644'
+  - name: Copy vars.yaml
+    copy:
+      src: ../files/vars.yaml
+      dest: ocp4-helpernode/vars.yaml
+      mode: '0644'

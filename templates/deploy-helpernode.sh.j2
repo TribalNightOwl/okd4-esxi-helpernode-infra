@@ -1,0 +1,85 @@
+#!/bin/bash
+set -e  # Exit on any error
+
+source config.sh
+
+echo Creating VMs in the ESXi server
+docker_run /files/terraform  "terraform init"
+docker_run /files/terraform  "terraform apply -auto-approve"
+read -p "Press ENTER to continue" CONTINUE
+
+echo Start web server to offer kickstart file
+KICKSTART_DIR=/tmp/kickstart-helpernode
+mkdir ${KICKSTART_DIR}
+cp files/ks.cfg ${KICKSTART_DIR}
+chmod -R 755 ${KICKSTART_DIR}
+docker run --rm --name helpernode-nginx -v ${KICKSTART_DIR}:/usr/share/nginx/html:ro -p 80:80 -d nginx:1.19
+printf "\ncurl http://${LOCAL_IP}/ks.cfg\n"
+
+echo Attaching ISO to helpernode VM and booting it
+docker_run /files "ansible-playbook playbooks/attach-iso-to-vm.yaml"
+
+printf "\n######  ATTENTION #######\n"
+printf "The helper node console will be opened\n"
+printf "Hit <TAB> to access the boot menu and boot with the following options:\n"
+printf "\n\n\nvmlinux initrd=initrd.img ks=http://${LOCAL_IP}/ks.cfg\n\n\n"
+printf "Close the vmrc window after successful installation and rebooting the helpernode\n\n"
+BOOTSTRAPVM=$(ssh root@${ESXI_SERVER} vim-cmd vmsvc/getallvms |grep ocp4-helpernode | cut -f1 -d ' ')
+vmrc --host=${ESXI_SERVER} --user=root --password=$TF_VAR_esxi_password --moid=$BOOTSTRAPVM
+
+echo Stopping web server
+docker stop helpernode-nginx
+rm -rf ${KICKSTART_DIR}
+
+echo Copy helpernode ssh host key to your knwon hosts file
+ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${HELPERNODE}" || true
+ssh-keyscan -H ${HELPERNODE} >> ${HOME}/.ssh/known_hosts
+
+echo Install required packages and clone ocp4-helpernode repo in helpernode
+docker_run /files "ansible-playbook playbooks/install-packages.yaml"
+docker_run /files "ansible-playbook playbooks/clone-repo.yaml"
+
+echo Configuring machine as Helpernode
+ssh root@${HELPERNODE} <<EOT
+cd ocp4-helpernode
+ansible-playbook -e @vars.yaml tasks/main.yml
+EOT
+
+for CHECK in dns-masters dns-workers dns-etcd dns-other local-registry-info install-info haproxy services nfs-info ; do
+        ssh root@${HELPERNODE}  /usr/local/bin/helpernodecheck $CHECK
+        read -p "press ENTER to continue" ENTER
+done
+
+docker_run /files "ansible-playbook playbooks/ignition-configs.yaml"
+docker_run /files "ansible-playbook playbooks/boot-cluster-vms.yaml"
+
+printf "\n#### ATTENTION ####\n"
+printf "\n\ncheck HAProxy stats:  http://${HELPERNODE}:9000"
+printf "\n\n\nWait until all are green!!\n\n\n"
+
+read -p "Press ENTER to continue" CONTINUE
+read -p "Are ALL boxes green???" CONTINUE
+
+echo Waiting for bootstrap to complete
+ssh root@${HELPERNODE} <<EOT
+cd ${INSTALL_DIR}
+export KUBECONFIG=${INSTALL_DIR}/auth/kubeconfig
+openshift-install wait-for bootstrap-complete --log-level debug
+EOT
+
+docker_run /files "ansible-playbook playbooks/approve-csrs.yaml"
+docker_run /files "ansible-playbook playbooks/set-managementState-to-Managed.yaml"
+
+echo Setting up NFS in helpernode
+ssh root@${HELPERNODE} <<EOT
+cd ${INSTALL_DIR}
+export KUBECONFIG=${INSTALL_DIR}/auth/kubeconfig
+openshift-install wait-for install-complete
+helpernodecheck nfs-setup
+oc create -f /usr/local/src/registry-pvc.yaml -n openshift-image-registry
+EOT
+
+docker_run /files "ansible-playbook playbooks/use-nfs-for-pvc.yaml"
+docker_run /files "ansible-playbook playbooks/open-image-registry-route.yaml"
+docker_run /files "ansible-playbook playbooks/shutdown-bootstrap-vm.yaml"
+docker_run /files "ansible-playbook playbooks/get-kubeconfig.yaml"

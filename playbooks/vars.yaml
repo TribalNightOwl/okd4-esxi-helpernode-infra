@@ -1,18 +1,59 @@
-installdir: ~/ocp4
+installdir: /root/ocp4
 vmxfile: /vmfs/volumes/alldisks/ocp4-helpernode/ocp4-helpernode.vmx
 isofile: /vmfs/volumes/alldisks/iso/CentOS-8.2.2004-x86_64-minimal.iso
+
+esxi:
+  ipaddr: "192.168.1.200"
+  datastore: alldisks
+
 vm:
   helpernode:
     name: ocp4-helpernode
+    ipaddr: "192.168.1.203"
+    macaddr: "00:50:56:01:01:0B"
+    disk: sda
+
   bootstrap:
     name: ocp4-bootstrap
+    ipaddr: "192.168.1.220"
+    macaddr: "00:50:56:01:01:0C"
+
   controlplane1:
     name: ocp4-control-plane-1
+    ipaddr: "192.168.1.221"
+    macaddr: "00:50:56:01:01:0D"
+
   controlplane2:
     name: ocp4-control-plane-2
+    ipaddr: "192.168.1.222"
+    macaddr: "00:50:56:01:01:0E"
+
   controlplane3:
     name: ocp4-control-plane-3
+    ipaddr: "192.168.1.223"
+    macaddr: "00:50:56:01:01:0F"
+
   compute1:
     name: ocp4-compute-1
+    ipaddr: "192.168.1.224"
+    macaddr: "00:50:56:01:01:10"
+
   compute2:
     name: ocp4-compute-2
+    ipaddr: "192.168.1.225"
+    macaddr: "00:50:56:01:01:11"
+
+dns:
+  domain: "example.com"
+  clusterid: "ocp4"
+  forwarder1: "8.8.8.8"
+  forwarder2: "8.8.4.4"
+
+dhcp:
+  router: "192.168.1.1"
+  bcast: "192.168.1.255"
+  netmask: "255.255.255.0"
+  poolstart: "192.168.1.210"
+  poolend: "192.168.1.230"
+  ipid: "192.168.1.0"
+  netmaskid: "255.255.255.0"

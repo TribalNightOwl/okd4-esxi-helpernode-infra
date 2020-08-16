@@ -1,0 +1,39 @@
+---
+disk: {{ vm.helpernode.disk }}
+helper:
+  name: "helper"
+  ipaddr: "{{ vm.helpernode.ipaddr }}"
+dns:
+  domain: "{{ dns.domain }}"
+  clusterid: "{{ dns.clusterid }}"
+  forwarder1: "{{ dns.forwarder1 }}"
+  forwarder2: "{{ dns.forwarder2 }}"
+dhcp:
+  router: "{{ dhcp.router }}"
+  bcast: "{{ dhcp.bcast }}"
+  netmask: "{{ dhcp.netmask }}"
+  poolstart: "{{ dhcp.poolstart }}"
+  poolend: "{{ dhcp.poolend }}"
+  ipid: "{{ dhcp.ipid }}"
+  netmaskid: "{{ dhcp.netmaskid }}"
+bootstrap:
+  name: "bootstrap"
+  ipaddr: "{{ vm.bootstrap.ipaddr }}"
+  macaddr: "{{ vm.bootstrap.macaddr }}"
+masters:
+  - name: "master0"
+    ipaddr: "{{ vm.controlplane1.ipaddr }}"
+    macaddr: "{{ vm.controlplane1.macaddr }}"
+  - name: "master1"
+    ipaddr: "{{ vm.controlplane2.ipaddr }}"
+    macaddr: "{{ vm.controlplane2.macaddr }}"
+  - name: "master2"
+    ipaddr: "{{ vm.controlplane3.ipaddr }}"
+    macaddr: "{{ vm.controlplane3.macaddr }}"
+workers:
+  - name: "worker0"
+    ipaddr: "{{ vm.compute1.ipaddr }}"
+    macaddr: "{{ vm.compute1.macaddr }}"
+  - name: "worker1"
+    ipaddr: "{{ vm.compute2.ipaddr }}"
+    macaddr: "{{ vm.compute2.macaddr }}"
