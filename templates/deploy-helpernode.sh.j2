@@ -31,7 +31,7 @@ echo Stopping web server
 docker stop helpernode-nginx
 rm -rf ${KICKSTART_DIR}
 
-echo Copy helpernode ssh host key to your knwon hosts file
+echo Copy helpernode ssh host key to your known hosts file
 ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${HELPERNODE}" || true
 ssh-keyscan -H ${HELPERNODE} >> ${HOME}/.ssh/known_hosts
 
