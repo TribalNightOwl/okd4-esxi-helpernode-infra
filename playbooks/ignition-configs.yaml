@@ -26,7 +26,7 @@
     shell: |
       cat <<EOF > {{ installdir }}/install-config.yaml
       apiVersion: v1
-      baseDomain: example.com
+      baseDomain: {{ dns.domain }}
       compute:
       - hyperthreading: Enabled
         name: worker
@@ -36,7 +36,7 @@
         name: master
         replicas: 3
       metadata:
-        name: ocp4
+        name: {{ dns.clusterid }}
       networking:
         clusterNetworks:
         - cidr: 10.254.0.0/16
