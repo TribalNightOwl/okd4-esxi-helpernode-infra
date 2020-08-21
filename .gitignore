@@ -1,5 +1,10 @@
-files/pull-secret.json
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
-terraform/.terraform
 .env
+bin
+files
+terraform
+config.sh
+deploy-helpernode.sh
+kubeadmin-password
+kubeconfig
+day2operations/htpasswdfile
+files/ks.cfg
