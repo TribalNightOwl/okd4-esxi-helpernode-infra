@@ -30,7 +30,7 @@ metadata:
   name: cluster
 spec:
   identityProviders:
-  - name: my_identity_provider 
+  - name: htpasswd
     mappingMethod: claim 
     type: HTPasswd
     htpasswd:
