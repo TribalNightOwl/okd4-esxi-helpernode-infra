@@ -1,4 +1,4 @@
-FROM tribrhy/iactools:latest
+FROM tribrhy/iactools:1.0
 
 RUN mkdir /root/.ssh \
     && chmod 600 /root/.ssh \
