@@ -1,8 +1,12 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
   required_providers {
     esxi = {
-      version = "~> 1.7"
+      source = "registry.terraform.io/josenk/esxi"
+      #
+      # For more information, see the provider source documentation:
+      # https://github.com/josenk/terraform-provider-esxi
+      # https://registry.terraform.io/providers/josenk/esxi
     }
   }
 }
