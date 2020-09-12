@@ -4,6 +4,11 @@
   - include_vars:
       file: vars.yaml
 
+  - name: Create hosts file
+    template:
+      src: ../templates/hosts.j2
+      dest: ../hosts
+
   - name: Create a terraform directory
     file:
       path: ../terraform
