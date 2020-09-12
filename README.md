@@ -9,14 +9,19 @@ Automated install of an OpenShift 4 cluster in the free version of VMware ESXi 6
 - SSH-enabled in the ESXi server
 - Passwordless login (ssh authorized keys) to ESXi server
 - Docker
+- RedHat pull secret from: https://cloud.redhat.com/openshift/install/metal
+- VMware Remote Console (vmrc) from: http://www.vmware.com/go/download-vmrc
+
 
 
 ## Usage
 Load the necessary ssh keys into an ssh-agent
 
-Create a .env file based on the env.example from the repo
+Update `files/pull-secret.json` with your own pull secret from RedHat
 
-Configure playbooks/vars.yaml to fit your environment
+Create a `.env` file based on the env.example from the repo
+
+Configure `playbooks/vars.yaml` and `hosts` to fit your environment
 
 
 ## To install the helper node
