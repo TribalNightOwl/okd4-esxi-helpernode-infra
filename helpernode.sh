@@ -16,7 +16,9 @@ case "$COMMAND" in
                 rm -f kubeconfig
                 rm -f config.sh
                 rm -f terraform/main.tf
-                rm -f terraform/vars.tf;;    
+                rm -f terraform/vars.tf
+                rm -f hosts
+                ;;    
         * ) cat <<EOT
 Usage:
         helpernode.sh deploy
