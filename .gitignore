@@ -1,6 +1,5 @@
 .env
 bin
-files
 terraform
 config.sh
 deploy-helpernode.sh
