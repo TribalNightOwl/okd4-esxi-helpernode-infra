@@ -7,3 +7,4 @@ kubeadmin-password
 kubeconfig
 day2operations/htpasswdfile
 files
+files/pull-secret.json
