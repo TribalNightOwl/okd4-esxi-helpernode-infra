@@ -15,8 +15,7 @@ case "$COMMAND" in
                 rm -f kubeadmin-password
                 rm -f kubeconfig
                 rm -f config.sh
-                rm -f terraform/main.tf
-                rm -f terraform/vars.tf
+                rm -f terraform
                 rm -f hosts
                 ;;    
         * ) cat <<EOT
