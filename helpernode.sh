@@ -3,9 +3,10 @@ COMMAND=$1
 
 function initialize_project {
         if [[ ! -e files/pull-secret.json ]] ; then
-                printf "\nObtain your RedHat pull secret from: https://cloud.redhat.com/openshift/install/metal\n"
-                printf "and create the 'files/pull-secret.json' file\n"
-                read -p "Press <ENTER> when done" CONTINUE
+                printf "\nObtain your RedHat pull secret from: https://cloud.redhat.com/openshift/install/metal\n\n"
+                read -p "Paste your pull secret here: " PULL_SECRET
+                mkdir files
+                echo ${PULL_SECRET} > files/pull-secret.json
         fi
 
         if [[ ! -e .env ]] ; then
