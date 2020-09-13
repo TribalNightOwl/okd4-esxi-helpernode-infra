@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Ensure nginx container is not running
+    docker_container:
+      name: helpernode-nginx
+      image: nginx:1.19
+      state: absent

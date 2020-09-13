@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Start web server to offer kickstart file
+    docker_container:
+      name: helpernode-nginx
+      image: nginx:1.19
+      ports:
+      - "80:80"
+      volumes:
+      - "{{ playbook_dir }}/../files:/usr/share/nginx/html:ro"
+      state: started
