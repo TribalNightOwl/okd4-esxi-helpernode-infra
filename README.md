@@ -11,6 +11,8 @@ Automated install of an OpenShift 4 cluster in the free version of VMware ESXi 6
 - Docker
 - RedHat pull secret from: https://cloud.redhat.com/openshift/install/metal
 - VMware Remote Console (vmrc) from: http://www.vmware.com/go/download-vmrc
+- Ansible
+- Docker SDK for Python https://pypi.org/project/docker
 
 
 
